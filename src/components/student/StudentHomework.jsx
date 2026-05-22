@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, AlertCircle } from 'lucide-react';
+import { BookOpen, ExternalLink } from 'lucide-react';
 
 export default function StudentHomework({ homework }) {
   // Homework is already filtered by UID in App.jsx for students
@@ -45,6 +45,20 @@ export default function StudentHomework({ homework }) {
                       </p>
                     </div>
                   </div>
+                  
+                  {hw.referenceLink && (
+                    <div className="mt-4 pt-4 border-t border-slate-800/50">
+                      <a 
+                        href={hw.referenceLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 hover:text-indigo-300 text-xs font-bold rounded-lg border border-indigo-500/20 transition-colors w-max"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        View Attached Reference
+                      </a>
+                    </div>
+                  )}
                 </div>
               );
             })}

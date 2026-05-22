@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Trash2, Calendar, Phone, Mail, GraduationCap, School, XCircle } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Search, Filter, Trash2, Calendar, Phone, Mail, GraduationCap, School, XCircle, ExternalLink, UserMinus } from 'lucide-react';
 
 const CLASSES = Array.from({ length: 12 }, (_, i) => `Class ${i + 1}`);
 const BOARDS = ['CBSE', 'ICSE', 'State Board', 'UP Board', 'Bihar Board', 'Other'];
@@ -120,7 +120,7 @@ export default function StudentList({ students, onDeleteStudent }) {
                   <th className="py-4 px-6">Class & Board</th>
                   <th className="py-4 px-6">Contact details</th>
                   <th className="py-4 px-6">Weekly Tuition Days</th>
-                  <th className="py-4 px-6 text-center">Actions</th>
+                  <th className="py-4 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/50">
@@ -173,18 +173,27 @@ export default function StudentList({ students, onDeleteStudent }) {
                     </td>
 
                     {/* Column 5: Actions */}
-                    <td className="py-4.5 px-6 text-center">
-                      <button
-                        onClick={() => {
-                          if (confirm(`Are you sure you want to delete ${student.name}?`)) {
-                            onDeleteStudent(student.id);
-                          }
-                        }}
-                        className="p-2 rounded-xl text-slate-500 hover:text-pink-400 hover:bg-pink-500/10 border border-transparent hover:border-pink-500/20 transition-all duration-300 cursor-pointer"
-                        title="Delete Student"
-                      >
-                        <Trash2 className="h-4.5 w-4.5" />
-                      </button>
+                    <td className="py-4 px-6 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link 
+                          to={`/student/${student.id}`}
+                          className="bg-indigo-500/10 text-indigo-400 p-2 rounded-lg hover:bg-indigo-500/20 transition-all border border-indigo-500/20"
+                          title="View Profile"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Link>
+                        <button 
+                          onClick={() => {
+                            if (confirm(`Are you sure you want to delete ${student.name}?`)) {
+                              onDeleteStudent(student.id);
+                            }
+                          }}
+                          className="bg-rose-500/10 text-rose-400 p-2 rounded-lg hover:bg-rose-500/20 transition-all border border-rose-500/20"
+                          title="Delete Student"
+                        >
+                          <UserMinus className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

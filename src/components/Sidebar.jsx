@@ -43,6 +43,11 @@ export default function Sidebar() {
       label: 'Homework Tracker',
       icon: BookOpen,
     },
+    {
+      to: '/timetable',
+      label: 'Time Table',
+      icon: CalendarCheck,
+    },
   ];
 
   return (

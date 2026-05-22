@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, Save, Calendar, CheckCircle, CheckCircle2, Clock, AlignLeft } from 'lucide-react';
+import { BookOpen, Save, Calendar, CheckCircle2, Clock, AlignLeft, Link as LinkIcon, Send } from 'lucide-react';
 
 export default function HomeworkManager({ students, homework, onSaveHomework }) {
   const [formData, setFormData] = useState({
@@ -7,6 +7,7 @@ export default function HomeworkManager({ students, homework, onSaveHomework }) 
     subject: '',
     description: '',
     dueDate: new Date(Date.now() + 86400000).toISOString().slice(0, 10), // Tomorrow default
+    referenceLink: '',
   });
 
   const [saving, setSaving] = useState(false);
@@ -34,14 +35,23 @@ export default function HomeworkManager({ students, homework, onSaveHomework }) 
         subject: formData.subject,
         description: formData.description,
         dueDate: formData.dueDate,
+        referenceLink: formData.referenceLink,
         status: 'Pending',
         createdAt: new Date().toISOString(),
       });
+
+      // WhatsApp redirect logic
+      if (selectedStudent?.phone) {
+        const message = `Hello ${selectedStudent.name}, you have been assigned new homework: ${formData.subject}. Due date: ${formData.dueDate}. Description: ${formData.description}. ${formData.referenceLink ? `Link: ${formData.referenceLink}` : ''}`;
+        window.open(`https://wa.me/${selectedStudent.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+      }
+
       setSavedMsg('✅ Homework assigned successfully!');
       setFormData({
         ...formData,
         subject: '',
         description: '',
+        referenceLink: '',
       });
     } catch (error) {
       console.error(error);
@@ -141,10 +151,25 @@ export default function HomeworkManager({ students, homework, onSaveHomework }) 
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  placeholder="Describe the homework clearly... (e.g. Solve exercises 1 to 10 from Chapter 4)"
+                  placeholder="Describe the homework clearly..."
                   rows={4}
                   className="w-full bg-slate-900/60 border border-slate-800 focus:border-orange-500 text-slate-200 text-sm pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/15 transition-all duration-300 placeholder:text-slate-600 resize-none"
                 ></textarea>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 ml-1">Reference Link (Optional)</label>
+              <div className="relative">
+                <LinkIcon className="absolute left-4 top-3.5 h-4 w-4 text-slate-500" />
+                <input
+                  type="url"
+                  name="referenceLink"
+                  placeholder="e.g. Google Drive link"
+                  value={formData.referenceLink}
+                  onChange={handleChange}
+                  className="w-full bg-slate-900/60 border border-slate-800 text-slate-200 text-sm pl-11 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                />
               </div>
             </div>
 
@@ -154,7 +179,7 @@ export default function HomeworkManager({ students, homework, onSaveHomework }) 
               className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-sm shadow-lg shadow-orange-900/40 disabled:opacity-50 transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer"
             >
               <Save className="h-4 w-4" />
-              {saving ? 'Assigning...' : 'Assign Homework'}
+              {saving ? 'Assigning...' : 'Assign & Send'}
             </button>
           </form>
         </div>
@@ -191,7 +216,7 @@ export default function HomeworkManager({ students, homework, onSaveHomework }) 
                           <div className="text-sm font-bold text-slate-200">{hw.studentName}</div>
                           <div className={`text-xs mt-1 font-semibold flex items-center gap-1 ${isCompleted ? 'text-slate-500' : 'text-orange-400'}`}>
                             <Calendar className="h-3 w-3" />
-                            Due: {hw.dueDate}
+                            {hw.dueDate}
                           </div>
                         </td>
                         <td className="py-4 px-4 align-top w-1/2">
@@ -201,6 +226,11 @@ export default function HomeworkManager({ students, homework, onSaveHomework }) 
                           <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
                             {hw.description}
                           </p>
+                          {hw.referenceLink && (
+                            <a href={hw.referenceLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 mt-2 text-[11px] font-bold text-indigo-400 hover:text-indigo-300 w-fit">
+                              <LinkIcon className="h-3 w-3" /> View Attachment
+                            </a>
+                          )}
                         </td>
                         <td className="py-4 px-4 align-top text-center w-1/4">
                           <button

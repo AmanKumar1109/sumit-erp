@@ -13,6 +13,7 @@ export default function StudentSidebar() {
     { to: '/tests', label: 'My Tests', icon: FileText },
     { to: '/payments', label: 'My Fees', icon: IndianRupee },
     { to: '/homework', label: 'My Homework', icon: BookOpen },
+    { to: '/timetable', label: 'My Time Table', icon: CalendarCheck },
   ];
 
   const handleLogout = async () => {
