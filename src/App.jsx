@@ -11,6 +11,7 @@ import TestManager from './components/TestManager.jsx';
 import PaymentManager from './components/PaymentManager.jsx';
 import HomeworkManager from './components/HomeworkManager.jsx';
 import TimeTableManager from './components/TimeTableManager.jsx';
+import StudyMaterialManager from './components/StudyMaterialManager.jsx';
 import StudentProfile from './components/StudentProfile.jsx';
 
 // Shared Components
@@ -24,6 +25,7 @@ import StudentTests from './components/student/StudentTests.jsx';
 import StudentPayments from './components/student/StudentPayments.jsx';
 import StudentHomework from './components/student/StudentHomework.jsx';
 import StudentTimeTable from './components/student/StudentTimeTable.jsx';
+import StudentStudyMaterial from './components/student/StudentStudyMaterial.jsx';
 
 // Firebase Imports
 import { db, auth } from './firebase.js';
@@ -41,6 +43,7 @@ function App() {
   const [payments, setPayments] = useState([]);
   const [homework, setHomework] = useState([]);
   const [timetable, setTimetable] = useState([]);
+  const [studyMaterial, setStudyMaterial] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Authentication & Role Check
@@ -72,6 +75,7 @@ function App() {
         setPayments([]);
         setHomework([]);
         setTimetable([]);
+        setStudyMaterial([]);
       }
       setAuthChecking(false);
     });
@@ -149,6 +153,16 @@ function App() {
         if (userRole === 'admin' || item.studentId === currentUser.uid) data.push(item);
       });
       setTimetable(data);
+    });
+
+    // 7. Study Material
+    const studyMaterialUnsub = onSnapshot(query(collection(db, 'studyMaterial'), orderBy('createdAt', 'desc')), (snapshot) => {
+      const data = [];
+      snapshot.forEach((doc) => {
+        const item = { id: doc.id, ...doc.data() };
+        if (userRole === 'admin' || item.studentId === currentUser.uid) data.push(item);
+      });
+      setStudyMaterial(data);
       setLoading(false);
     });
 
@@ -159,6 +173,7 @@ function App() {
       paymentsUnsub();
       homeworkUnsub();
       timetableUnsub();
+      studyMaterialUnsub();
     };
   }, [currentUser, userRole]);
 
@@ -224,6 +239,24 @@ function App() {
     }
   };
 
+  const handleSaveStudyMaterial = async (record) => {
+    if (record.id) {
+      const docRef = doc(db, 'studyMaterial', record.id);
+      await setDoc(docRef, record, { merge: true });
+    } else {
+      const docRef = doc(collection(db, 'studyMaterial'));
+      await setDoc(docRef, { ...record, id: docRef.id });
+    }
+  };
+
+  const handleDeleteStudyMaterial = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'studyMaterial', id));
+    } catch (error) {
+      console.error('Error deleting study material:', error);
+    }
+  };
+
   const handleDeleteStudent = async (studentId) => {
     try {
       await deleteDoc(doc(db, 'students', studentId));
@@ -275,6 +308,7 @@ function App() {
               <Route path="/payments" element={<PaymentManager students={students} payments={payments} onSavePayment={handleSavePayment} />} />
               <Route path="/homework" element={<HomeworkManager students={students} homework={homework} onSaveHomework={handleSaveHomework} onDeleteHomework={handleDeleteHomework} />} />
               <Route path="/timetable" element={<TimeTableManager students={students} timetable={timetable} onSave={handleSaveTimeTable} onDelete={handleDeleteTimeTable} />} />
+              <Route path="/study-material" element={<StudyMaterialManager students={students} studyMaterial={studyMaterial} onSaveStudyMaterial={handleSaveStudyMaterial} onDeleteStudyMaterial={handleDeleteStudyMaterial} />} />
               <Route path="/student/:id" element={<StudentProfile students={students} attendance={attendance} tests={tests} payments={payments} homework={homework} timetable={timetable} />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
@@ -297,6 +331,7 @@ function App() {
             <Route path="/payments" element={<StudentPayments payments={payments} />} />
             <Route path="/homework" element={<StudentHomework homework={homework} />} />
             <Route path="/timetable" element={<StudentTimeTable timetable={timetable} />} />
+            <Route path="/study-material" element={<StudentStudyMaterial studyMaterial={studyMaterial} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

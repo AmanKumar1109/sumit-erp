@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, UserPlus, Users, GraduationCap, CalendarCheck, FileText, IndianRupee, Menu, X, BookOpen, LogOut } from 'lucide-react';
+import { LayoutDashboard, UserPlus, Users, GraduationCap, CalendarCheck, FileText, IndianRupee, Menu, X, BookOpen, LogOut, Library } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase.js';
 
@@ -47,6 +47,11 @@ export default function Sidebar() {
       to: '/timetable',
       label: 'Time Table',
       icon: CalendarCheck,
+    },
+    {
+      to: '/study-material',
+      label: 'Study Materials',
+      icon: Library,
     },
   ];
 

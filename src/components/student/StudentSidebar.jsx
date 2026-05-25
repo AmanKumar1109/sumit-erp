@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, CalendarCheck, FileText, IndianRupee, BookOpen, Menu, X, GraduationCap, LogOut } from 'lucide-react';
+import { LayoutDashboard, CalendarCheck, FileText, IndianRupee, BookOpen, Menu, X, GraduationCap, LogOut, Library } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase.js';
 
@@ -14,6 +14,7 @@ export default function StudentSidebar() {
     { to: '/payments', label: 'My Fees', icon: IndianRupee },
     { to: '/homework', label: 'My Homework', icon: BookOpen },
     { to: '/timetable', label: 'My Time Table', icon: CalendarCheck },
+    { to: '/study-material', label: 'Study Materials', icon: Library },
   ];
 
   const handleLogout = async () => {
