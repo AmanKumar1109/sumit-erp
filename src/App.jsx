@@ -216,6 +216,14 @@ function App() {
     await deleteDoc(doc(db, 'timetable', id));
   };
 
+  const handleDeleteHomework = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'homework', id));
+    } catch (error) {
+      console.error('Error deleting homework:', error);
+    }
+  };
+
   const handleDeleteStudent = async (studentId) => {
     try {
       await deleteDoc(doc(db, 'students', studentId));
@@ -265,7 +273,7 @@ function App() {
               <Route path="/attendance" element={<AttendanceManager students={students} attendance={attendance} onSaveAttendance={handleSaveAttendance} />} />
               <Route path="/tests" element={<TestManager students={students} tests={tests} onSaveTest={handleSaveTest} />} />
               <Route path="/payments" element={<PaymentManager students={students} payments={payments} onSavePayment={handleSavePayment} />} />
-              <Route path="/homework" element={<HomeworkManager students={students} homework={homework} onSaveHomework={handleSaveHomework} />} />
+              <Route path="/homework" element={<HomeworkManager students={students} homework={homework} onSaveHomework={handleSaveHomework} onDeleteHomework={handleDeleteHomework} />} />
               <Route path="/timetable" element={<TimeTableManager students={students} timetable={timetable} onSave={handleSaveTimeTable} onDelete={handleDeleteTimeTable} />} />
               <Route path="/student/:id" element={<StudentProfile students={students} attendance={attendance} tests={tests} payments={payments} homework={homework} timetable={timetable} />} />
               <Route path="*" element={<Navigate to="/" replace />} />
