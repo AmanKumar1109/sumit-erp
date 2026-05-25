@@ -86,13 +86,13 @@ export default function StudentProfile({ students, attendance, tests, payments, 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm">
               <div className="flex items-center gap-3 text-slate-300 print:text-slate-800">
-                <Phone className="h-4 w-4 text-slate-500 print:text-slate-600" /> {student.phone || 'N/A'}
+                <Phone className="h-4 w-4 text-slate-500 print:text-slate-600" /> {student.mobile || student.phone || 'N/A'}
               </div>
               <div className="flex items-center gap-3 text-slate-300 print:text-slate-800">
                 <Mail className="h-4 w-4 text-slate-500 print:text-slate-600" /> {student.email}
               </div>
               <div className="flex items-center gap-3 text-slate-300 print:text-slate-800">
-                <School className="h-4 w-4 text-slate-500 print:text-slate-600" /> {student.schoolName || 'N/A'}
+                <School className="h-4 w-4 text-slate-500 print:text-slate-600" /> {student.school || student.schoolName || 'N/A'}
               </div>
               <div className="flex items-center gap-3 text-slate-300 print:text-slate-800">
                 <MapPin className="h-4 w-4 text-slate-500 print:text-slate-600" /> {student.address || 'N/A'}
